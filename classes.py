@@ -50,3 +50,26 @@ def transmission_attempt(packet):
         except OutOfRangeError:
             print("Target out of range.")
             raise "BrokenConnectionError"
+
+
+def sanding_the_message(packet):
+    try:
+        transmission_attempt(packet)
+    except:
+        print("Transmission failed")
+
+
+def wrapping_packet(packet, list_satellites):
+    space_entity_list = list_satellites.copy()
+    message = packet.data
+    sender = packet.sender
+    receiver = packet.receiver
+    if space_entity_list.index(sender) < space_entity_list.index(receiver):
+        packet = Packet(message, space_entity_list[space_entity_list.index(receiver)-1], receiver)
+        for i in range(space_entity_list.index(receiver)-2, space_entity_list.index(sender)-1, -1):
+            packet = RelayPacket(packet, space_entity_list[i], space_entity_list[i+1])
+    else:
+        packet = Packet(message, space_entity_list[space_entity_list.index(receiver)+1], receiver)
+        for i in range(space_entity_list.index(receiver)+1, space_entity_list.index(sender)):
+            packet = RelayPacket(packet, space_entity_list[i+1], space_entity_list[i])
+    sanding_the_message(packet)
