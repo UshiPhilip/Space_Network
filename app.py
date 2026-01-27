@@ -1,6 +1,5 @@
-from SpaceNetwork.SpaceNetwork.classes import RelayPacket
+from classes import *
 from space_network_lib import *
-from classes import Satellite, NotSatellite, transmission_attempt, RelayPacket
 
 # Create earth
 earth = NotSatellite("Earth", 0)
@@ -10,14 +9,17 @@ sat1 = Satellite("Sat1", 100)
 sat2 = Satellite("Sat2", 200)
 sat3 = Satellite("Sat3", 300)
 sat4 = Satellite("Sat4", 400)
+sat5 = Satellite("Sat5", 500)
+sat6 = Satellite("Sat6", 600)
 
-# A message from the Earth to sat4
-p_final = Packet("Hello from Earth!!!", sat3, sat4)
-p_earth_to_sat3 = RelayPacket(p_final, sat2, sat3)
-p_earth_to_sat2 = RelayPacket(p_earth_to_sat3, sat1, sat2)
-p_earth_to_sat1 = RelayPacket(p_earth_to_sat2, earth, sat1)
+space_entity_list = [earth, sat1, sat2, sat3, sat4, sat5, sat6]
 
-try:
-    transmission_attempt(p_earth_to_sat1)
-except:
-    print("Transmission failed")
+
+
+p = Packet("Hello from sat1", sat2, sat1)
+wrapping_packet(p, [earth, sat1, sat2, sat3, sat4, sat5, sat6])
+
+# try:
+#     transmission_attempt(p_earth_to_sat1)
+# except:
+#     print("Transmission failed")
