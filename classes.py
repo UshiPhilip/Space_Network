@@ -64,7 +64,7 @@ def decryption(data, key):
 
 
 def transmission_attempt(packet):
-    spaceship = SpaceNetwork(level=1)
+    spaceship = SpaceNetwork(level=7)
     while True:
         try:
             spaceship.send(packet)
