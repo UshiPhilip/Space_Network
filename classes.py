@@ -16,7 +16,7 @@ class Satellite(SpaceEntity):
             # Sending to the receiver
             transmission_attempt(inner_packet)
         else:
-            message = decryption(packet.data, b"P")
+            message = decryption(packet.data, self.encrypt_key)
             print(f"[{self.name}]: Final destination reached: {message}")
 
 
