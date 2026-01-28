@@ -13,7 +13,7 @@ class Satellite(SpaceEntity):
             # Sending to the receiver
             transmission_attempt(inner_packet)
         else:
-            print(f"Final destination reached: {packet.data}")
+            print(f"[{self.name}]: Final destination reached: {packet.data}")
 
 
 class RelayPacket(Packet):
@@ -30,8 +30,26 @@ class NotSatellite(SpaceEntity):
         pass
 
 
+class EncryptedPacket(Packet):
+    def __init__(self, data, sender, receiver, key):
+        super().__init__(data, sender, receiver)
+        self.key = key
+        self.data = data
+        EncryptedPacket.encryption(self)
+
+    def encryption(self):
+        if isinstance(self.data, str):
+            self.data = self.data.encode()
+
+        if len(self.key) < len(self.data):
+            self.key = self.key * (len(self.data) // len(self.key) + 1)
+            self.key = self.key[:len(self.data)]
+
+        self.data = bytes([t ^ k for t, k in zip(self.data, self.key)]).decode()
+
+
 def transmission_attempt(packet):
-    spaceship = SpaceNetwork(level=5)
+    spaceship = SpaceNetwork(level=1)
     while True:
         try:
             spaceship.send(packet)
@@ -59,17 +77,13 @@ def sanding_the_message(packet):
         print("Transmission failed")
 
 
-def wrapping_packet(packet, list_satellites):
-    space_entity_list = list_satellites.copy()
-    message = packet.data
-    sender = packet.sender
-    receiver = packet.receiver
+def wrapping_packet(message, sender, receiver, space_entity_list, key):
     if space_entity_list.index(sender) < space_entity_list.index(receiver):
-        packet = Packet(message, space_entity_list[space_entity_list.index(receiver)-1], receiver)
+        packet = EncryptedPacket(message, space_entity_list[space_entity_list.index(receiver)-1], receiver, key)
         for i in range(space_entity_list.index(receiver)-2, space_entity_list.index(sender)-1, -1):
             packet = RelayPacket(packet, space_entity_list[i], space_entity_list[i+1])
     else:
-        packet = Packet(message, space_entity_list[space_entity_list.index(receiver)+1], receiver)
+        packet = EncryptedPacket(message, space_entity_list[space_entity_list.index(receiver)+1], receiver, key)
         for i in range(space_entity_list.index(receiver)+1, space_entity_list.index(sender)):
             packet = RelayPacket(packet, space_entity_list[i+1], space_entity_list[i])
     sanding_the_message(packet)
