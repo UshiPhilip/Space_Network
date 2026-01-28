@@ -1,5 +1,4 @@
 from classes import *
-from space_network_lib import *
 
 # Create earth
 earth = NotSatellite("Earth", 0)
@@ -16,6 +15,7 @@ space_entity_list = [earth, sat1, sat2, sat3, sat4, sat5, sat6]
 
 
 
+<<<<<<< HEAD
 p = Packet("Hello from sat4", sat4, sat1)
 wrapping_packet(p, [earth, sat1, sat2, sat3, sat4, sat5, sat6])
 
@@ -23,3 +23,6 @@ wrapping_packet(p, [earth, sat1, sat2, sat3, sat4, sat5, sat6])
 #     transmission_attempt(p_earth_to_sat1)
 # except:
 #     print("Transmission failed")
+=======
+wrapping_packet("Hello from sat1", sat1, sat4, space_entity_list, b"P")
+>>>>>>> level-7
