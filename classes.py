@@ -3,6 +3,9 @@ import time
 
 
 class Satellite(SpaceEntity):
+    def __init__(self, name, distance_from_earth, encrypt_key):
+        super().__init__(name, distance_from_earth)
+        self.encrypt_key = encrypt_key.encode()
 
     def receive_signal(self, packet: Packet):
         # Chacking if it's an instance
